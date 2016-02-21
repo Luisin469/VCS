@@ -212,10 +212,33 @@ app.controller("ControladorVCS", function($scope, $http) {
                     document.getElementById("txt_nomb_proy").value = article.proyecto;
                     document.getElementById("txt_tutor").value = article.tutor;
                     document.getElementById("txt_act_realizar").value = article.actividades;
+                    document.getElementById("txt_cod_proy").value = article.txt_cod_proy;
                 });
             }
         });
     };
+
+
+    $scope.graba_ficha_estudiante = function() {
+        var ruta = document.getElementById("ruta_principal").value;
+        var id_cc = document.getElementById("group1").value;
+        alert("id_cc " + id_cc);
+        $.ajax({
+            type: 'POST',
+            dataType: 'json',
+            data: {id_cc: id_cc},
+            //data: {id_cmb:'carrera'},
+            //data: $('#formid').serialize(),
+            url: ruta + '/F_muestra_ficha_estudiante',
+            success: function(data) {
+
+                $.each(data.items, function(index, article) {
+                    document.getElementById("txt_cedula").value = article.est_ced;
+                });
+            }
+        });
+    };
+    
     $(function() {
         $('#datetimepicker6').datetimepicker();
         $('#datetimepicker7').datetimepicker({

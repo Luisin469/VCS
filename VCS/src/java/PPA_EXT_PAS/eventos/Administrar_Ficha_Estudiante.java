@@ -34,15 +34,6 @@ public class Administrar_Ficha_Estudiante {
     public Administrar_Ficha_Estudiante(HttpServletRequest request) {
         this.ficha_estudiante = new Ficha_Estudiante();
         this.ficha_estudiante.setId_ficha_estudiante((String) request.getParameter("txt_id_ficha_estudiante"));
-        this.ficha_estudiante.setDireccion((String) request.getParameter("txt_direccion"));
-        this.ficha_estudiante.setDescripcion_actividades((String) request.getParameter("txt_descripcion"));
-        this.ficha_estudiante.setEmail((String) request.getParameter("txt_email"));
-        this.ficha_estudiante.setEstado("A");
-        this.ficha_estudiante.setFacebook((String) request.getParameter("txt_facebook"));
-        this.ficha_estudiante.setLinkedin((String) request.getParameter("txt_linkedin"));
-        this.ficha_estudiante.setTwiter((String) request.getParameter("txt_twiter"));
-        this.ficha_estudiante.setResponsable_proyecto((String) request.getParameter("txt_responsable_proyecto"));
-        this.ficha_estudiante.setTelefono((String) request.getParameter("txt_telefono"));
 
     }
 
@@ -78,26 +69,12 @@ public class Administrar_Ficha_Estudiante {
 
     public static List<Carta_Compromiso> mostrar_carta_compromiso(String id_carta_comp) {
         List< Carta_Compromiso> opciones = new LinkedList< Carta_Compromiso>();
-
-        /*String sql = "SELECT id_carta_comp ||'-'|| lpad(trim(to_char(a.secuencial,'99999999')),3,'0') id_cc, "
-         + "trim(nomb_empresa) nombre_empresa,\n"
-         + "       trim(\"Nomb_estudiante\") nombre_est, "
-         + "trim(\"Ciclo_curso\") semestre, trim(\"Tipo_actividad\") tipo_act,"
-         + "to_char(\"Fecha_inicio\",'dd/mm/yyyy') fecha_ini,\n"
-         + "  to_char(\"Fecha_fin\",'dd/mm/yyyy') fecha_fin\n"
-         + "  FROM \"VCS_CARTA_COMPROMISO\" a\n"
-         + "  where lpad(trim(to_char(a.secuencial,'99999999')),3,'0') = lpad(?,3,'0')\n"
-         + "  and   a.\"Nomb_estudiante\" like ?\n"
-         + "  and   trim(a.\"Tipo_actividad\") =  trim(coalesce(?, a.\"Tipo_actividad\"))\n"
-         + "  and exists(select 'X' FROM \"VCS_TRAMITES\" where id_carta_compromiso = id_carta_comp ||'-'|| lpad(trim(to_char(a.secuencial,'99999999')),3,'0')\n"
-         + "  and trim(etapa_tramite) = trim('FICHA_ESTUDIANTE') and estado = 'P')\n"
-         + "  and a.\"Estado\"='A'";*/
         String sql = "select id_cc, tipo_actividad, dia_ini,\n"
                 + " mes_ini, anio_ini, dia_fin, mes_fin, anio_fin,\n"
                 + " ced_est, nombre_estudiante, cel_est, correo_est,\n"
                 + " carrera_est, ciclo_est, institucion, rep_leg, cc_area_actividad, cc_responsable_area,\n"
                 + " cc_horario_previsto, cargo_rep_leg, ar_telefono, ue_direccion, programa, coalesce(proyecto, 'NA') proyecto,\n"
-                + " nombre_tutor, actividades\n"
+                + " nombre_tutor, actividades, coalesce(cod_proy, 'NA') cod_proy\n"
                 + "from view_datos_cc\n"
                 + "where trim(id_cc) = ? ";
 
@@ -132,15 +109,10 @@ public class Administrar_Ficha_Estudiante {
                 carta_comp.setTelf_representante(cres.getString(20).trim());
                 carta_comp.setDir_empresa(cres.getString(21).trim());
                 carta_comp.setNombre_programa(cres.getString(22).trim());
-                if (cres.getString(23).trim().equals("NA")){
-                    carta_comp.setProyecto("");
-                }else{
-                    carta_comp.setProyecto(cres.getString(23).trim());
-                }
-                
+                if (cres.getString(23).trim().equals("NA")){carta_comp.setProyecto("");}else{carta_comp.setProyecto(cres.getString(23).trim());}
                 carta_comp.setNombre_tutor(cres.getString(24).trim());
                 carta_comp.setActividad_1(cres.getString(25).trim());
-
+                if (cres.getString(26).trim().equals("NA")){carta_comp.setActividad_2("");}else{carta_comp.setActividad_2(cres.getString(26).trim());}
                 opciones.add(carta_comp);
             }
         } catch (Exception e) {
@@ -178,7 +150,7 @@ public class Administrar_Ficha_Estudiante {
             json.put("proyecto", carta_comp.getProyecto());
             json.put("tutor", carta_comp.getNombre_tutor());
             json.put("actividades", carta_comp.getActividad_1());
-
+            json.put("cod_proy", carta_comp.getActividad_2());
         } catch (JSONException ex) {
             Logger.getLogger(Carta_Compromiso.class.getName()).log(Level.SEVERE, null, ex);
         }
